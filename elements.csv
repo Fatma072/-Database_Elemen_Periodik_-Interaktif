@@ -1,0 +1,24 @@
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Database Elemen Periodik", layout="centered")
+st.title("🧪 Database Elemen Periodik Interaktif")
+
+# Load data dari file CSV
+df = pd.read_csv("elements.csv")
+
+# Filter pencarian
+nama = st.text_input("Cari berdasarkan nama atau simbol:")
+golongan = st.selectbox("Pilih golongan", options=["Semua"] + sorted(df["Golongan"].astype(str).unique().tolist()))
+
+filtered = df.copy()
+if nama:
+    filtered = filtered[
+        df["Nama"].str.contains(nama, case=False) |
+        df["Simbol"].str.contains(nama, case=False)
+    ]
+if golongan != "Semua":
+    filtered = filtered[filtered["Golongan"].astype(str) == golongan]
+
+# Tampilkan tabel hasil filter
+st.dataframe(filtered)
